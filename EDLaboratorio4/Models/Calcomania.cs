@@ -8,6 +8,6 @@ namespace EDLaboratorio4.Models
     public class Calcomania
     {
         public int Numero { get; set; }
-        public bool Estado { get; set; }
+        public string Estado { get; set; }
     }
 }
