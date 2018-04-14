@@ -1,0 +1,29 @@
+﻿@using EDLaboratorio4.Models
+@{
+    ViewBag.Title = "CargaArchivoAlbum";
+}
+
+<h2>@ViewBag.Title.</h2>
+@model IEnumerable<Pais>
+@{
+
+}
+
+<!DOCTYPE html>
+
+<html>
+<body>
+    @using (Html.BeginForm("CargaArchivoEstadoCalcomanias", "Album", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="file" />
+        <input type="submit" value="Import" />
+
+    }
+
+    @if (Model != null && Model.Count() > 0)
+    {
+        <input type="button" value="Continuar" onclick="location.href='@Url.Action("IndexFecha", "Partido" )'" />
+
+    }
+</body>
+</html>

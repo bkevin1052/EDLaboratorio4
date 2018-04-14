@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using EDLaboratorio4.DBContext;
+﻿using EDLaboratorio4.DBContext;
 using EDLaboratorio4.Models;
 using Newtonsoft.Json;
-using System.Linq;
+using System;
+using System.IO;
+using System.Web;
+using System.Web.Mvc;
 namespace EDLaboratorio4.Controllers
 {
     public class AlbumController : Controller
@@ -117,12 +114,11 @@ namespace EDLaboratorio4.Controllers
                 string extension = Path.GetExtension(file.FileName);
 
                 file.SaveAs(filePath);
-                string[] separadores = { ",", "]" };
                 using (StreamReader r = new StreamReader(filePath))
                 {
                     string json = r.ReadToEnd();
                     Pais temp = new Pais();
-                    LeerArchivo(json, 0, temp);
+                    LeerArchivoAlbum(json, 0, temp);
                 }
                 modelo.SubirArchivo(ruta, file);
 
@@ -131,7 +127,7 @@ namespace EDLaboratorio4.Controllers
             return View();
         }
 
-        public Pais LeerArchivo(dynamic json, int contador, Pais pais)
+        public Pais LeerArchivoAlbum(dynamic json, int contador, Pais pais)
         {
             if (json != null)
             {
@@ -144,7 +140,7 @@ namespace EDLaboratorio4.Controllers
                     dynamic array = JsonConvert.DeserializeObject(json.ToString());
                     foreach (var item in array)
                     {
-                        pais = LeerArchivo(item, contador, pais);
+                        pais = LeerArchivoAlbum(item, contador, pais);
                     }
                 }
                 else
@@ -157,7 +153,7 @@ namespace EDLaboratorio4.Controllers
                         contador += 1;
                         foreach (var item in array)
                         {
-                            pais = LeerArchivo(item, contador, pais);
+                            pais = LeerArchivoAlbum(item, contador, pais);
                         }
                     }
                     else
@@ -207,5 +203,56 @@ namespace EDLaboratorio4.Controllers
             return pais;
         }
 
+        public ActionResult CargaArchivoEstadoCalcomanias()
+        {
+            return View();
+        }
+
+        //Post SubirArchivoPaises
+        [HttpPost]
+        public ActionResult CargaArchivoEstadoCalcomanias(HttpPostedFileBase file)
+        {
+
+            string filePath = string.Empty;
+            Archivo modelo = new Archivo();
+            if (file != null)
+            {
+                string ruta = Server.MapPath("~/Temp/");
+
+                if (!Directory.Exists(ruta))
+                {
+                    Directory.CreateDirectory(ruta);
+                }
+
+                filePath = ruta + Path.GetFileName(file.FileName);
+
+                string extension = Path.GetExtension(file.FileName);
+
+                file.SaveAs(filePath);
+                using (StreamReader r = new StreamReader(filePath))
+                {
+                    string json = r.ReadToEnd();
+                    LeerArchivoEstadoCalcomanias(json);
+                }
+                modelo.SubirArchivo(ruta, file);
+
+            }
+
+            return View();
+        }
+
+        public void LeerArchivoEstadoCalcomanias(dynamic json)
+        {
+            if (json != null)
+            {
+                    dynamic array = JsonConvert.DeserializeObject(json.ToString());
+                    foreach (var item in array)
+                    {
+                        string llave = item.Name;
+                        DefaultConnection.EstadoCalcomanias.Add(llave, Convert.ToInt16(item.Value));
+                    }
+            }
+
+        }
     }
 }
