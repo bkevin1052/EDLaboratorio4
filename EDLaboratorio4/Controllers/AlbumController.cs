@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using EDLaboratorio4.DBContext;
+using EDLaboratorio4.Models;
+using Newtonsoft.Json;
+using System;
+using System.IO;
 using System.Web;
 using System.Web.Mvc;
-using EDLaboratorio4.DBContext;
-using EDLaboratorio4.Models;
-
 namespace EDLaboratorio4.Controllers
 {
     public class AlbumController : Controller
@@ -13,7 +12,7 @@ namespace EDLaboratorio4.Controllers
         DefaultConnection db = DefaultConnection.getInstance;
         // GET: Album
         public ActionResult Index()
-        {            
+        {
             return View();
         }
 
@@ -87,6 +86,173 @@ namespace EDLaboratorio4.Controllers
             {
                 return View();
             }
+        }
+
+        public ActionResult CargaArchivoAlbum()
+        {
+            return View();
+        }
+
+        //Post SubirArchivoPaises
+        [HttpPost]
+        public ActionResult CargaArchivoAlbum(HttpPostedFileBase file)
+        {
+
+            string filePath = string.Empty;
+            Archivo modelo = new Archivo();
+            if (file != null)
+            {
+                string ruta = Server.MapPath("~/Temp/");
+
+                if (!Directory.Exists(ruta))
+                {
+                    Directory.CreateDirectory(ruta);
+                }
+
+                filePath = ruta + Path.GetFileName(file.FileName);
+
+                string extension = Path.GetExtension(file.FileName);
+
+                file.SaveAs(filePath);
+                using (StreamReader r = new StreamReader(filePath))
+                {
+                    string json = r.ReadToEnd();
+                    Pais temp = new Pais();
+                    LeerArchivoAlbum(json, 0, temp);
+                }
+                modelo.SubirArchivo(ruta, file);
+
+            }
+
+            return View();
+        }
+
+        public Pais LeerArchivoAlbum(dynamic json, int contador, Pais pais)
+        {
+            if (json != null)
+            {
+                if (contador == 0 || json.Value == null)
+                {
+                    if (contador == 0)
+                    {
+                        contador += 1;
+                    }
+                    dynamic array = JsonConvert.DeserializeObject(json.ToString());
+                    foreach (var item in array)
+                    {
+                        pais = LeerArchivoAlbum(item, contador, pais);
+                    }
+                }
+                else
+                {
+                    dynamic array = JsonConvert.DeserializeObject(json.Value.ToString());
+                    if (contador == 1)
+                    {
+                        string llave = json.Name;
+                        pais.Nombre = llave;
+                        contador += 1;
+                        foreach (var item in array)
+                        {
+                            pais = LeerArchivoAlbum(item, contador, pais);
+                        }
+                    }
+                    else
+                    {
+                        if (json.Name == "faltantes")
+                        {
+                            foreach (var item in array)
+                            {
+                                Calcomania ncalcomania = new Calcomania();
+                                ncalcomania.Estado = "Faltante";
+                                ncalcomania.Numero = Convert.ToInt16(item.Value);
+                                pais.Faltantes.Add(ncalcomania);
+                            }
+                            return pais;
+                        }
+
+                        if (json.Name == "coleccionadas")
+                        {
+                            foreach (var item in array)
+                            {
+                                Calcomania ncalcomania = new Calcomania();
+                                ncalcomania.Estado = "Coleccionada";
+                                ncalcomania.Numero = Convert.ToInt16(item.Value);
+                                pais.Coleccionadas.Add(ncalcomania);
+                            }
+                            return pais;
+                        }
+
+                        if (json.Name == "cambios")
+                        {
+                            foreach (var item in array)
+                            {
+                                Calcomania ncalcomania = new Calcomania();
+                                ncalcomania.Estado = "Disponible para cambio";
+                                ncalcomania.Numero = Convert.ToInt16(item.Value);
+                                pais.DisponibleCambio.Add(ncalcomania);
+                            }
+                            DefaultConnection.Album.Add(pais.Nombre, pais);
+                            pais = null;
+                            pais = new Pais();
+                            return pais;
+
+                        }
+                    }
+                }
+            }
+            return pais;
+        }
+
+        public ActionResult CargaArchivoEstadoCalcomanias()
+        {
+            return View();
+        }
+
+        //Post SubirArchivoPaises
+        [HttpPost]
+        public ActionResult CargaArchivoEstadoCalcomanias(HttpPostedFileBase file)
+        {
+
+            string filePath = string.Empty;
+            Archivo modelo = new Archivo();
+            if (file != null)
+            {
+                string ruta = Server.MapPath("~/Temp/");
+
+                if (!Directory.Exists(ruta))
+                {
+                    Directory.CreateDirectory(ruta);
+                }
+
+                filePath = ruta + Path.GetFileName(file.FileName);
+
+                string extension = Path.GetExtension(file.FileName);
+
+                file.SaveAs(filePath);
+                using (StreamReader r = new StreamReader(filePath))
+                {
+                    string json = r.ReadToEnd();
+                    LeerArchivoEstadoCalcomanias(json);
+                }
+                modelo.SubirArchivo(ruta, file);
+
+            }
+
+            return View();
+        }
+
+        public void LeerArchivoEstadoCalcomanias(dynamic json)
+        {
+            if (json != null)
+            {
+                    dynamic array = JsonConvert.DeserializeObject(json.ToString());
+                    foreach (var item in array)
+                    {
+                        string llave = item.Name;
+                        DefaultConnection.EstadoCalcomanias.Add(llave, Convert.ToInt16(item.Value));
+                    }
+            }
+
         }
     }
 }
