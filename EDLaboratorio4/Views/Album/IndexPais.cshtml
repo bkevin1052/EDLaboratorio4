@@ -11,13 +11,13 @@
             @Html.DisplayNameFor(model => model.Nombre)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Faltantes)
+        </th>
+        <th>
             @Html.DisplayNameFor(model => model.Coleccionadas)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.DisponibleCambio)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Faltantes)
         </th>
     </tr>
 
@@ -27,13 +27,23 @@
             @Html.DisplayFor(modelItem => item.Nombre)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Coleccionadas)
+            @Html.DisplayFor(modelItem => item.Faltantes[0].Numero)
+            @Html.DisplayFor(modelItem => item.Faltantes[1].Numero)
+            @Html.DisplayFor(modelItem => item.Faltantes[2].Numero)
         </td>
         <td>
-        @Html.DisplayFor(modelItem => item.DisponibleCambio)
+            @Html.DisplayFor(modelItem => item.Coleccionadas[0].Numero)
+            @Html.DisplayFor(modelItem => item.Coleccionadas[1].Numero)
+            @Html.DisplayFor(modelItem => item.Coleccionadas[2].Numero)
+            @Html.DisplayFor(modelItem => item.Coleccionadas[3].Numero)
+
+
         </td>
         <td>
-        @Html.DisplayFor(modelItem => item.Faltantes)
+            @Html.DisplayFor(modelItem => item.DisponibleCambio[0].Numero)
+            @Html.DisplayFor(modelItem => item.DisponibleCambio[1].Numero)
+            @Html.DisplayFor(modelItem => item.DisponibleCambio[2].Numero)
+
         </td>
     </tr>
 }
