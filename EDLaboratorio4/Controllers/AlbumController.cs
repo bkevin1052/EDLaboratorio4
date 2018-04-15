@@ -53,18 +53,24 @@ namespace EDLaboratorio4.Controllers
         // GET: Album/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return View(DefaultConnection.EstadoCalcomanias.Where(x => x.Value.Numero == id).FirstOrDefault().Value);
         }
 
         // POST: Album/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit([Bind(Include = "Nombre,Estado,Numero")]Calcomania calcomania)
         {
             try
             {
-                // TODO: Add update logic here
+                Calcomania calcomaniaBuscada = DefaultConnection.EstadoCalcomanias.Where(x => x.Value.Numero == calcomania.Numero).FirstOrDefault().Value;
 
-                return RedirectToAction("Index");
+                if (calcomaniaBuscada == null)
+                {
+                    return HttpNotFound();
+                }
+                calcomaniaBuscada.Estado = calcomania.Estado;
+
+                return RedirectToAction("IndexCalcomania");
             }
             catch
             {
@@ -251,11 +257,20 @@ namespace EDLaboratorio4.Controllers
         {
             if (json != null)
             {
-                    dynamic array = JsonConvert.DeserializeObject(json.ToString());
-                    foreach (var item in array)
+                dynamic array = JsonConvert.DeserializeObject(json.ToString());
+                int id = 0;
+                foreach (var item in array)
+                    {                    
+                    string llave = item.Name;
+                    Calcomania calcomania = new Calcomania
                     {
-                        string llave = item.Name;
-                        DefaultConnection.EstadoCalcomanias.Add(llave, Convert.ToInt16(item.Value));
+                        Nombre = item.Name,
+                        Estado = item.Value,
+                        Numero = id
+                    };
+                    
+                    DefaultConnection.EstadoCalcomanias.Add(llave, calcomania);
+                    id++;
                     }
             }
 

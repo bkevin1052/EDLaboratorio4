@@ -13,7 +13,7 @@ namespace EDLaboratorio4.DBContext
 
         public static Dictionary<string, Pais> Album = new Dictionary<string, Pais>();
 
-        public static Dictionary<string, int> EstadoCalcomanias = new Dictionary<string, int>();
+        public static Dictionary<string, Calcomania> EstadoCalcomanias = new Dictionary<string, Calcomania>();
 
         public int IDActual { get; set; }
 
