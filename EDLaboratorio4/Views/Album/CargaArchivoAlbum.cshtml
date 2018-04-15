@@ -1,9 +1,9 @@
 ﻿@using EDLaboratorio4.Models
 @{
-    ViewBag.Title = "CargaArchivoAlbum";
+    ViewBag.Title = "Carga Archivo Album";
 }
 
-<h2>@ViewBag.Title.</h2>
+<h2>@ViewBag.Title</h2>
 @model IEnumerable<Pais>
 @{
 
@@ -22,7 +22,7 @@
 
     @if (Model != null && Model.Count() > 0)
     {
-        <input type="button" value="Continuar" onclick="location.href='@Url.Action("IndexFecha", "Partido" )'" />
+        <input type="button" value="Continuar" onclick="location.href='@Url.Action("IndexPais", "Album" )'" />
 
     }
 </body>

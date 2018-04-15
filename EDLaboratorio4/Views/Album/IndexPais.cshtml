@@ -1,0 +1,41 @@
+﻿@model IEnumerable<EDLaboratorio4.Models.Pais>
+
+@{
+    ViewBag.Title = "MI ALBUM";
+}
+
+<h2>MI ALBUM DE PAIS</h2>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Coleccionadas)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DisponibleCambio)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Faltantes)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Coleccionadas)
+        </td>
+        <td>
+        @Html.DisplayFor(modelItem => item.DisponibleCambio)
+        </td>
+        <td>
+        @Html.DisplayFor(modelItem => item.Faltantes)
+        </td>
+    </tr>
+}
+
+</table>

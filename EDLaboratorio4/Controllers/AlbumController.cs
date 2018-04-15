@@ -3,6 +3,7 @@ using EDLaboratorio4.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 namespace EDLaboratorio4.Controllers
@@ -11,9 +12,14 @@ namespace EDLaboratorio4.Controllers
     {
         DefaultConnection db = DefaultConnection.getInstance;
         // GET: Album
-        public ActionResult Index()
+        public ActionResult IndexPais()
         {
-            return View();
+            return View(DefaultConnection.Album.Values.ToList());
+        }
+
+        public ActionResult IndexCalcomania()
+        {
+            return View(DefaultConnection.EstadoCalcomanias.Values.ToList());
         }
 
         // GET: Album/Details/5
@@ -124,7 +130,7 @@ namespace EDLaboratorio4.Controllers
 
             }
 
-            return View();
+            return View(DefaultConnection.Album.Values.ToList());
         }
 
         public Pais LeerArchivoAlbum(dynamic json, int contador, Pais pais)
@@ -162,10 +168,10 @@ namespace EDLaboratorio4.Controllers
                         {
                             foreach (var item in array)
                             {
-                                Calcomania ncalcomania = new Calcomania();
-                                ncalcomania.Estado = "Faltante";
-                                ncalcomania.Numero = Convert.ToInt16(item.Value);
-                                pais.Faltantes.Add(ncalcomania);
+                                Calcomania Ncalcomania = new Calcomania();
+                                Ncalcomania.Estado = "Faltante";
+                                Ncalcomania.Numero = Convert.ToInt16(item.Value);
+                                pais.Faltantes.Add(Ncalcomania);
                             }
                             return pais;
                         }
@@ -174,10 +180,10 @@ namespace EDLaboratorio4.Controllers
                         {
                             foreach (var item in array)
                             {
-                                Calcomania ncalcomania = new Calcomania();
-                                ncalcomania.Estado = "Coleccionada";
-                                ncalcomania.Numero = Convert.ToInt16(item.Value);
-                                pais.Coleccionadas.Add(ncalcomania);
+                                Calcomania Ncalcomania = new Calcomania();
+                                Ncalcomania.Estado = "Coleccionada";
+                                Ncalcomania.Numero = Convert.ToInt16(item.Value);
+                                pais.Coleccionadas.Add(Ncalcomania);
                             }
                             return pais;
                         }
@@ -186,10 +192,10 @@ namespace EDLaboratorio4.Controllers
                         {
                             foreach (var item in array)
                             {
-                                Calcomania ncalcomania = new Calcomania();
-                                ncalcomania.Estado = "Disponible para cambio";
-                                ncalcomania.Numero = Convert.ToInt16(item.Value);
-                                pais.DisponibleCambio.Add(ncalcomania);
+                                Calcomania Ncalcomania = new Calcomania();
+                                Ncalcomania.Estado = "Disponible para cambio";
+                                Ncalcomania.Numero = Convert.ToInt16(item.Value);
+                                pais.DisponibleCambio.Add(Ncalcomania);
                             }
                             DefaultConnection.Album.Add(pais.Nombre, pais);
                             pais = null;
@@ -238,7 +244,7 @@ namespace EDLaboratorio4.Controllers
 
             }
 
-            return View();
+            return View(DefaultConnection.EstadoCalcomanias.Values.ToList());
         }
 
         public void LeerArchivoEstadoCalcomanias(dynamic json)
